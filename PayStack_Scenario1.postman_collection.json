@@ -1,0 +1,220 @@
+{
+	"info": {
+		"_postman_id": "01510f21-ae69-4dc1-8a9b-2df111bdeeba",
+		"name": "PayStack_Scenario1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create a new Payment Page",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "68a5fb49-3966-43af-8a98-3ee4ed231bd9",
+						"exec": [
+							"var resp = pm.response.json();\r",
+							"var id = resp.data.id;\r",
+							"console.log(id);\r",
+							"\r",
+							"pm.test(\"Tests\", function() {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.globals.set(\"eid\", jsonData.data.id);\r",
+							"    if(jsonData.data.id) {\r",
+							"      postman.setNextRequest(\"Get the newly created page\");\r",
+							"   }else {\r",
+							"      \r",
+							"      postman.setNextRequest(\"Next Request\");    \r",
+							"      \r",
+							"   }\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"Monthly retainer\",\r\n    \"interval\":\"monthly\",\r\n    \"amount\":500000\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/page",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"page"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get the newly created page",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "31f92f95-9bfd-4d0c-9f4d-874af3e250e0",
+						"exec": [
+							"var resp = pm.response.json()\r",
+							"console.log(resp);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify the details\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.id).to.eql(pm.globals.get('eid'))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify amount details\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.amount).to.eql(500000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(10000);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/page/{{eid}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"page",
+						"{{eid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all the Payment pages",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "858479ba-facc-4d12-b486-39fd9a200426",
+						"exec": [
+							"var resp = pm.response.json()\r",
+							"console.log(resp);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify Newly created Page\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data[0].id).to.eql(pm.globals.get('eid'))\r",
+							"});\r",
+							"if(resp.data[0].id == pm.globals.get('eid'))\r",
+							"{\r",
+							"    console.log(\"Created page is there\");\r",
+							"}else{\r",
+							"    console.log(\"Created page is not there\");\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/page",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"page"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "sk_test_bdecaaa7c475b5c1c1c2f231d8e738b053b1efeb",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "b2f43c12-bc4a-4105-96e5-38ffe74fcd6a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "a4cba8a1-3a02-4373-a0bd-b957dce30ca0",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -1,0 +1,373 @@
+{
+	"info": {
+		"_postman_id": "9b4167f1-5e49-432d-a22a-3295d25c8724",
+		"name": "PayStack_Scenario2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create a new Subscription",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e46c2067-3b65-47b0-b8f8-ace70088adea",
+						"exec": [
+							"pm.test(\"Global set of subscription_code and email_token\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.globals.set(\"subcode\", jsonData.data.subscription_code);\r",
+							"    pm.globals.set(\"emailcode\", jsonData.data.email_token);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    var jsonData = pm.response.json();\r",
+							"    if(jsonData.status==\"true\"){\r",
+							"\r",
+							"  setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+							"  }, 3000);\r",
+							"\r",
+							"  postman.setNextRequest(\"Disable the Subscription and verify the status Copy 2\");\r",
+							"\r",
+							"}\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer ",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"customer\" : \"CUS_qxvmcqrs5l6hept\",\r\n    \"plan\" : \"PLN_rlbbwk7apvxmlnm\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/subscription",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscription"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Disable the Subscription and verify the status Copy 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f607f322-a220-4a50-b1da-1e5e9ee45658",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    var jsonData = pm.response.json();\r",
+							"    if(jsonData.status==\"true\"){\r",
+							"\r",
+							"  setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+							"  }, 3000);\r",
+							"\r",
+							"  postman.setNextRequest(\"Enable the subscription\");\r",
+							"\r",
+							"}\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer AUTH_xmn5jo93zu",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"code\" : \"{{subcode}}\",\r\n    \"token\" : \"{{emailcode}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/subscription/disable",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscription",
+						"disable"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enable the subscription",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6998b53-253e-4d8c-820e-7d0a393d52fd",
+						"exec": [
+							"pm.test(\"Verify the status\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    if(jsonData.status==\"true\"){\r",
+							"\r",
+							"  setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+							"  }, 3000);\r",
+							"\r",
+							"  postman.setNextRequest(\"Verify the subscription status using Fetch new subscription\");\r",
+							"\r",
+							"}\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer AUTH_xmn5jo93zu",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"code\" : \"{{subcode}}\",\r\n    \"token\" : \"{{emailcode}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/subscription/enable",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscription",
+						"enable"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verify the subscription status using Fetch new subscription",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4f61876e-feea-42df-b1a8-0305ef68ffe3",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Verify the subscription status\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.status).to.eql(true);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer AUTH_xmn5jo93zu",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/subscription/{{subcode}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscription",
+						"{{subcode}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Disable the Subscription and verify the status Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4b675a8d-fd74-408b-bd06-56d564dc0f3e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer AUTH_xmn5jo93zu",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"code\" : \"{{subcode}}\",\r\n    \"token\" : \"{{emailcode}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/subscription/disable",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscription",
+						"disable"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "Bearer sk_test_bdecaaa7c475b5c1c1c2f231d8e738b053b1efeb",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			},
+			{
+				"key": "in",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1867ba74-3b3c-4755-8bf8-685ed2c76dbe",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "dc1a96f4-4f3e-465c-929b-222a8ef86b8c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
